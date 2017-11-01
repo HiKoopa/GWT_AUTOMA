@@ -1,4 +1,4 @@
-require "def"
+require "object"
 
 local print_personal_info = function()
 end
@@ -6,16 +6,29 @@ end
 local print_map = function()
 end
 
-local cal_move_next = function()
-end
+local cal_next_move = function(stepLimit, currentLoc, mapInfo, availableMoveList)
+	if stepLimit < 0 then
+		return
+	end
 
+	table.insert(availableMoveList, currentLoc)
+	currentLoc.next1 
+	cal_next_move(stepLimit - 1, currentLoc, mapInfo)
+
+
+	--table.insert(availableMoveList, cal_next_move(stepLimit - 1, currentLoc, mapInfo))
+	--table.insert(availableMoveList, cal_next_move(stepLimit - 1, currentLoc, mapInfo))
+	return 
+end
+--[[
 local cal_available_move = function(stepLimit, currentLoc, mapInfo)
 	local availableMoveList = {}
 
-	table.insert(availableMoveList, cal_move_next(stepLimit, currentLoc, mapInfo))
-	table.insert(availableMoveList, cal_move_next(stepLimit - 1, currentLoc, mapInfo))
-end
+	cal_next_move(stepLimit, currentLoc, mapInfo)
 
+	return availableMoveList
+end
+--]]
 local go = function(step)
 	print(step)
 end
@@ -23,7 +36,9 @@ end
 local act_a = function(player)
 	print_personal_info()
 	print_map()
-	cal_available_move(stepLimit, currentLoc, mapInfo)
+	--cal_available_move(stepLimit, currentLoc, mapInfo)
+	local availableMoveList = { }
+	cal_next_move(stepLimit, currentLoc, mapInfo, availableMoveList)
 	io.write("Please enter where you want to go : ")
 	go(io.read("*number"))
 end
