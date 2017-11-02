@@ -100,20 +100,15 @@ end
 
 local act_a = function(player, placeInfo)
 	player.currentManLoc = "START"
-	placeInfo["A"].isPlaced = true
-	placeInfo["HZF1"].isPlaced = true
-	placeInfo["B"].isPlaced = true
-	placeInfo["C"].isPlaced = true
-	placeInfo["T"].isPlaced = true
-	placeInfo["TP1"].isPlaced = true
-	placeInfo["D"].isPlaced = true
-	placeInfo["E"].isPlaced = true
-	placeInfo["F"].isPlaced = true
-	placeInfo["G"].isPlaced = true
 	decide_move(true, 333 + player.upgrade.move, player.currentManLoc, placeInfo)
 end
 
-local cal_available_action = function(currentManLoc, placeInfo)
+local cal_available_action = function(currentPlace)
+	local availableActionList
+
+	for i, v in ipairs(currentPlace.act) do
+		table.insert(availableActionList, v)
+	end
 	
 end
 
@@ -121,11 +116,10 @@ local function decide_act()
 end
 
 local act_b = function(currentManLoc, placeInfo)
-	device_act()
 	io.write("Please enter what you want to do : ")
 	local action = io.read("*number")
 
-	local availableActionList = cal_available_action(currentManLoc, placeInfo)
+	local availableActionList = cal_available_action(placeInfo[currentManLoc])
 
 	if availableActionList[action] == nil then
 	end
@@ -140,7 +134,7 @@ local start_player_turn = function(player, placeInfo)
 	print_personal_info()
 	print_map()
 	act_a(player, placeInfo)
-	act_b(player)
+	--act_b(player)
 	act_c(player)
 end
 
@@ -148,67 +142,89 @@ local start_computer_turn = function()
 end
 
 local random_pop = function(tbl)
+	if #tbl == 0 then return nil end
 	return table.remove(tbl, math.random(1, #tbl))
 end
 
 local act_discard = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_hire = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_build = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_cert_objective = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_forward_engine = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_tp_2engine = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_double_ax = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_cattle_market = function()
+	print(debug.getinfo(1, "n").name)
 end
 local act_hazard = function()
+	print(debug.getinfo(1, "n").name)
 end
 
-local set_netural_building = function(neturalBuilding, place)
-	table.insert(neturalBuilding["A"], act_discard)
-	table.insert(neturalBuilding["A"], act_hire)
-	table.insert(neturalBuilding["A"], act_hire)
-
-	table.insert(neturalBuilding["B"], act_discard)
-	table.insert(neturalBuilding["B"], act_build)
-
-	table.insert(neturalBuilding["C"], act_cert_objective)
-	table.insert(neturalBuilding["C"], act_forward_engine)
-
-	table.insert(neturalBuilding["D"], act_tp_2engine)
-	table.insert(neturalBuilding["D"], act_double_ax)
-
-	table.insert(neturalBuilding["E"], act_discard)
-	table.insert(neturalBuilding["E"], act_cattle_market)
-
-	table.insert(neturalBuilding["F"], act_discard)
-	table.insert(neturalBuilding["F"], act_hazard)
-
-	table.insert(neturalBuilding["G"], act_forward_engine)
-	table.insert(neturalBuilding["G"], act_double_ax)
-
-
+local set_neutral_building = function(building, place)
+	table.insert(building["A"], act_discard)
+	table.insert(building["A"], act_hire)
+	table.insert(building["A"], act_hire)
+	table.insert(building["B"], act_discard)
+	table.insert(building["B"], act_build)
+	table.insert(building["C"], act_cert_objective)
+	table.insert(building["C"], act_forward_engine)
+	table.insert(building["D"], act_tp_2engine)
+	table.insert(building["D"], act_double_ax)
+	table.insert(building["E"], act_discard)
+	table.insert(building["E"], act_cattle_market)
+	table.insert(building["F"], act_discard)
+	table.insert(building["F"], act_hazard)
+	table.insert(building["G"], act_forward_engine)
+	table.insert(building["G"], act_double_ax)
+	
+	local index = {"A", "B", "C", "D", "E", "F", "G"}
+	place["A"].act = building[random_pop(index)]
+	place["A"].isPlaced = true
+	place["B"].act = building[random_pop(index)]
+	place["B"].isPlaced = true
+	place["C"].act = building[random_pop(index)]
+	place["C"].isPlaced = true
+	place["D"].act = building[random_pop(index)]
+	place["D"].isPlaced = true
+	place["E"].act = building[random_pop(index)]
+	place["E"].isPlaced = true
+	place["F"].act = building[random_pop(index)]
+	place["F"].isPlaced = true
+	place["G"].act = building[random_pop(index)]
+	place["G"].isPlaced = true
+end
+local set_player_order = function()
 end
 
 local init_setting = function(OBJ)
+--set additional action
 --random station master tile
 --random neutral building tile 
-	set_netural_building(OBJ.neturalBuilding, OBJ.place)
+	set_neutral_building(OBJ.building, OBJ.place)
 --tile dummy setting
 --pop1 * 7
 --pop2 * ?
 --pop1,2,3 set to kc
 --cattle market setting
 --random objective card
---building a? b?
+--building a? b? give
 --draw 4
 --start objective card
+	set_player_order()
 --money
 end
 
