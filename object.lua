@@ -50,6 +50,15 @@ local _OBJ = {
 		["G2"] 		= { isPlaced = false, next1 = "KC", },
 		["KC"]		= { },
 	},
+	neturalBuilding = {
+		["A"] = { },
+		["B"] = { },
+		["C"] = { },
+		["D"] = { },
+		["E"] = { },
+		["F"] = { },
+		["G"] = { },
+	},
 	kc = {
 	},
 	tileStack = {
