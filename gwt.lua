@@ -98,7 +98,7 @@ local function decide_move(isFirstStep, stepLimit, currentManLoc, placeInfo)
 	decide_move(false, stepLimit - 1, availableMoveList[nextManLoc], placeInfo)
 end
 
-local act_a = function(player, placeInfo)
+local phase_a = function(player, placeInfo)
 	player.currentManLoc = "START"
 	decide_move(true, 333 + player.upgrade.move, player.currentManLoc, placeInfo)
 end
@@ -115,7 +115,7 @@ end
 local function decide_act()
 end
 
-local act_b = function(currentManLoc, placeInfo)
+local phase_b = function(currentManLoc, placeInfo)
 	io.write("Please enter what you want to do : ")
 	local action = io.read("*number")
 
@@ -127,23 +127,18 @@ local act_b = function(currentManLoc, placeInfo)
 	decide_act(availableActionList)
 end
 
-local act_c = function()
+local phase_c = function()
 end
 
 local start_player_turn = function(player, placeInfo)
 	print_personal_info()
 	print_map()
-	act_a(player, placeInfo)
-	--act_b(player)
-	act_c(player)
+	phase_a(player, placeInfo)
+	--phase_b(player)
+	phase_c(player)
 end
 
 local start_computer_turn = function()
-end
-
-local random_pop = function(tbl)
-	if #tbl == 0 then return nil end
-	return table.remove(tbl, math.random(1, #tbl))
 end
 
 local act_discard = function()
