@@ -1,4 +1,5 @@
 local OBJ = require "object"
+local ACT = require "action"
 
 local print_personal_info = function()
 end
@@ -112,9 +113,6 @@ local cal_available_action = function(currentPlace)
 	
 end
 
-local function decide_act()
-end
-
 local phase_b = function(currentManLoc, placeInfo)
 	io.write("Please enter what you want to do : ")
 	local action = io.read("*number")
@@ -135,81 +133,23 @@ local start_player_turn = function(player, placeInfo)
 	print_map()
 	phase_a(player, placeInfo)
 	--phase_b(player)
-	phase_c(player)
+	--phase_c(player)
 end
 
 local start_computer_turn = function()
 end
 
-local act_discard = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_hire = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_build = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_cert_objective = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_forward_engine = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_tp_2engine = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_double_ax = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_cattle_market = function()
-	print(debug.getinfo(1, "n").name)
-end
-local act_hazard = function()
-	print(debug.getinfo(1, "n").name)
-end
-
-local set_neutral_building = function(building, place)
-	table.insert(building["A"], act_discard)
-	table.insert(building["A"], act_hire)
-	table.insert(building["A"], act_hire)
-	table.insert(building["B"], act_discard)
-	table.insert(building["B"], act_build)
-	table.insert(building["C"], act_cert_objective)
-	table.insert(building["C"], act_forward_engine)
-	table.insert(building["D"], act_tp_2engine)
-	table.insert(building["D"], act_double_ax)
-	table.insert(building["E"], act_discard)
-	table.insert(building["E"], act_cattle_market)
-	table.insert(building["F"], act_discard)
-	table.insert(building["F"], act_hazard)
-	table.insert(building["G"], act_forward_engine)
-	table.insert(building["G"], act_double_ax)
-	
-	local index = {"A", "B", "C", "D", "E", "F", "G"}
-	place["A"].act = building[random_pop(index)]
-	place["A"].isPlaced = true
-	place["B"].act = building[random_pop(index)]
-	place["B"].isPlaced = true
-	place["C"].act = building[random_pop(index)]
-	place["C"].isPlaced = true
-	place["D"].act = building[random_pop(index)]
-	place["D"].isPlaced = true
-	place["E"].act = building[random_pop(index)]
-	place["E"].isPlaced = true
-	place["F"].act = building[random_pop(index)]
-	place["F"].isPlaced = true
-	place["G"].act = building[random_pop(index)]
-	place["G"].isPlaced = true
+local set_neutral_building = function(obj)
+	obj:set_neutral_building()
 end
 local set_player_order = function()
 end
 
-local init_setting = function(OBJ)
+local init_setting = function(obj)
 --set additional action
 --random station master tile
 --random neutral building tile 
-	set_neutral_building(OBJ.building, OBJ.place)
+	set_neutral_building(obj)
 --tile dummy setting
 --pop1 * 7
 --pop2 * ?
@@ -225,5 +165,5 @@ end
 
 math.randomseed(os.time())
 init_setting(OBJ)
-start_player_turn(OBJ.players.player1, OBJ.place)
+start_player_turn(OBJ.player.human[1], OBJ.place)
 start_computer_turn()
