@@ -121,7 +121,6 @@ function _OBJ:set_current_loc(playerNum, loc)
 	self.player.human[playerNum].currentManLoc = loc
 end
 
-
 return _OBJ
 
 --[[

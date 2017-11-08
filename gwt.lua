@@ -129,7 +129,6 @@ end
 
 local phase_b = function(obj, playerNum)
 	local availableActionList = cal_available_action(obj.place[obj.player.human[playerNum].currentManLoc])
-
 	io.write("Please enter what you want to do : ")
 	local actInput = io.read("*number")
 
