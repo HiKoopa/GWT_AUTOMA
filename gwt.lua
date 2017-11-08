@@ -91,7 +91,7 @@ local phase_a = function(obj, playerNum)
 		if leftStep <= 0 then break end
 
 		local availableMoveList = cal_available_move(currentManLoc, obj.place)
-		io.write("Please enter where you want to go : ")
+		io.write("A) Please enter where you want to go : ")
 		local locInput = io.read("*number")
 
 		if locInput == 1 then
@@ -122,17 +122,27 @@ local cal_available_action = function(currentPlace)
 
 	for i, v in ipairs(currentPlace.tile) do
 		table.insert(availableActionList, v)
-		print(string.format("%d) %s", i, v.text))
 	end
+	--table.insert(availableActionList, SA)
 	
+	return availableActionList
 end
 
 local phase_b = function(obj, playerNum)
 	local availableActionList = cal_available_action(obj.place[obj.player.human[playerNum].currentManLoc])
-	io.write("Please enter what you want to do : ")
-	local actInput = io.read("*number")
 
-	if availableActionList[actInput] == nil then
+	while #availableActionList > 0 do
+		for i, v in ipairs(availableActionList) do
+			print(string.format("%d) %s", i, v.text))
+		end
+		io.write("B) Please enter what you want to do : ")
+		local actInput = io.read("*number")
+
+		if availableActionList[actInput] == nil then
+			print(string.format("The value is not vaild. please re-enter"))
+		end
+		--do_action
+		table.remove(availableActionList, actInput)
 	end
 end
 
