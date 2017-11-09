@@ -3,16 +3,6 @@ random_pop = function(tbl)
 	return table.remove(tbl, math.random(1, #tbl))
 end
 
-
-local pay_dollars = function(money, pay)
-	if money < pay then
-		print("Not enough money")
-		return false
-	end
-
-	return money - pay 
-end
-
 local gain_cert1 = function(curCert, upgrade2)
 	if (curCert < 3) or (curCert == 3 and upgrade2.cert1 == 1) then
 		return curCert + 1
@@ -33,34 +23,6 @@ local pay_cert1 = function(curCert)
 		return false
 	end
 	return curCert - 1, 1
-end
-
-local draw_1 = function(hand, drawDeck)
-	if #drawDeck == 0 then shuffle() end
-	
-	local drawCard = random_pop(drawDeck)
-
-	if drawCard then
-		print("Draw : ", drawCard)
-		table.insert(hand, drawCard)
-	else
-		print("There is no card to draw")
-	end
-end
-
-local discard_1 = function(hand, cardType)
-	local isFind = false
-	for i, v in ipairs(hand) do
-		if v.type == cardType then
-			isFind = true
-			table.remove(hand, i)
-		end
-	end
-	if isFind == false then
-		print("Not found card type")
-		return false
-	end
-	return true
 end
 
 local discard_choice = function(hand, num)
@@ -108,114 +70,47 @@ end
 local engine_move1 = function()
 end
 --------------------------------------------
-local gain_dollar_1 = function(currentPlayer)
-	OBJ.gain_dollars(currentPlayer, 1)
+local gain_dollar_1 = function(obj, currentPlayerNum)
+	obj:gain_dollars(currentPlayerNum, 1)
 end 
-local gain_dollar_2 = function(obj, currentPlayer)
-	--local playerMoney = obj.playerMoney.human[currentPlayer]
-	--playerMoney = gain_dollars(playerMoney, 2)
-	--return true, obj 
+local gain_dollar_2 = function(obj, currentPlayerNum)
+	obj:gain_dollars(currentPlayerNum, 2)
 end 
-local gain_dollar_4 = function(obj, currentPlayer)
-	--local playerMoney = obj.playerMoney.human[currentPlayer]
-	--playerMoney = gain_dollars(playerMoney, 4)
-	--return true, obj 
-end 
-local draw_discard_1 = function(hand, drawDeck)
-	draw_1(hand, drawDeck)
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-	return true
-end 
-local draw_discard_2 = function(hand, drawDeck)
-	draw_1(hand, drawDeck)
-	draw_1(hand, drawDeck)
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-	return true
-end 
-local draw_discard_3 = function(hand, drawDeck)
-	draw_1(hand, drawDeck)
-	draw_1(hand, drawDeck)
-	draw_1(hand, drawDeck)
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-
-	while true do
-		print_hand()
-		print("Please enter what you want to discard : ")
-		if discard_choice(hand, io.read("number")) == true then
-			break
-		end
-	end
-	return true
+local gain_dollar_4 = function(obj, currentPlayerNum)
+	obj:gain_dollars(currentPlayerNum, 4)
 end 
 local draw_discard_cowboy = function(hand, drawDeck, cw)
 end
-local discard_white_gain_2_dollars = function(hand, money)
-	if discard_1(hand, "white") == false then
+local discard_white_gain_2_dollars = function(obj, currentPlayerNum)
+	if obj:discard_1(currentPlayerNum, "white") == false then
 		return false
 	end
-	gain_dollars(money, 2)
+	obj:gain_dollars(currentPlayerNum, 2)
 	return true
 end
-local discard_white_gain_4_dollars = function(hand, money)
-	if discard_1(hand, "white") == false then
+local discard_white_gain_4_dollars = function(obj, currentPlayerNum)
+	if obj:discard_1(currentPlayerNum, "white") == false then
 		return false
 	end
-	gain_dollars(money, 4)
+	obj:gain_dollars(currentPlayerNum, 4)
 	return true
 end
-local discard_green_gain_2_dollars = function(hand, money)
-	if discard_1(hand, "green") == false then
+local discard_green_gain_2_dollars = function(obj, currentPlayerNum)
+	if obj:discard_1(currentPlayerNum, "green") == false then
 		return false
 	end
-	gain_dollars(money, 2)
+	obj:gain_dollars(currentPlayerNum, 2)
 	return true
 end
-local discard_black_gain_2_dollars = function(hand, money)
-	if discard_1(hand, "black") == false then
+local discard_black_gain_2_dollars = function(obj, currentPlayerNum)
+	if obj:discard_1(currentPlayerNum, "black") == false then
 		return false
 	end
-	gain_dollars(money, 2)
+	obj:gain_dollars(currentPlayerNum, 2)
 	return true
 end
 local discard_black_gain_2_cert = function(hand, cert, upgrade2)
-	if discard_1(hand, "black") == false then
+	if OBJ:discard_1(hand, "black") == false then
 		return false
 	end
 	gain_cert1(cert, upgrade2)
@@ -223,7 +118,7 @@ local discard_black_gain_2_cert = function(hand, cert, upgrade2)
 	return true
 end
 local discard_yellow_gain_10_dollars = function(hand, money)
-	if discard_1(hand, "yellow") == false then
+	if OBJ:discard_1(hand, "yellow") == false then
 		return false
 	end
 	gain_dollars(money, 10)

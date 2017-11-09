@@ -82,7 +82,7 @@ local _OBJ = {
 				currentEngLoc = 0,
 				money = 0, 
 				availableBuilding = {}, 
-				drawDeck = {}, 
+				drawDeck = {"grey", "grey", "grey", "grey", "grey", "white", "white", "white", "black", "black", "black", "green", "green", "green" }, 
 				hand = {}, 
 				discardPile = {}, 
 				removedCard = {}, 
@@ -115,10 +115,136 @@ end
 
 function _OBJ:gain_dollars(playerNum, gain)
 	self.player.human[playerNum].money = self.player.human[playerNum].money + gain
+	--local money = self.player.human[playerNum].money
+	--money = money + gain
+	return true
+end
+
+function _OBJ:pay_dollars(playerNum, pay)
+	local money = self.player.human[playerNum].money
+	if money < pay then
+		print("Not enough money")
+		return false
+	end
+
+	money = money - pay
+	return true
 end
 
 function _OBJ:set_current_loc(playerNum, loc)
 	self.player.human[playerNum].currentManLoc = loc
+	return true
+end
+
+function _OBJ:get_player_info(playerNum)
+	return self.player.human[playerNum]
+end
+
+function _OBJ:draw_1(playerNum)
+	local drawDeck = self.player.human[playerNum].drawDeck
+	local hand = self.player.human[playerNum].hand
+	if #drawDeck == 0 then shuffle() end
+	
+	local drawCard = random_pop(drawDeck)
+
+	if drawCard then
+		print("Draw : ", drawCard)
+		table.insert(hand, drawCard)
+	else
+		print("There is no card to draw")
+	end
+end
+
+function _OBJ:discard_1(playerNum, cardType)
+	local hand = self.player.human[playerNum].hand
+	local isFind = false
+	for i, v in ipairs(hand) do
+		if v == cardType then
+			isFind = true
+			table.remove(hand, i)
+			break
+		end
+	end
+	if isFind == false then
+		print("Not found card type")
+		return false
+	end
+	return true
+end
+
+function _OBJ:draw_discard_1(playerNum)
+	local hand = self.player.human[playerNum].hand
+	local drawDeck = self.player.human[playerNum].drawDeck
+
+	draw_1(hand, drawDeck)
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+	return true
+end
+
+function _OBJ:draw_discard_2(playerNum)
+	local hand = self.player.human[playerNum].hand
+	local drawDeck = self.player.human[playerNum].drawDeck
+
+	draw_1(hand, drawDeck)
+	draw_1(hand, drawDeck)
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+	return true
+end
+
+function _OBJ:draw_discard_3(playerNum)
+	local hand = self.player.human[playerNum].hand
+	local drawDeck = self.player.human[playerNum].drawDeck
+
+	draw_1(hand, drawDeck)
+	draw_1(hand, drawDeck)
+	draw_1(hand, drawDeck)
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+
+	while true do
+		--print_hand()
+		print("Please enter what you want to discard : ")
+		if discard_choice(hand, io.read("number")) == true then
+			break
+		end
+	end
+	return true
 end
 
 return _OBJ

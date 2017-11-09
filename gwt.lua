@@ -1,7 +1,15 @@
 local OBJ = require "object"
 local ACT = require "action"
 
-local print_personal_info = function()
+local print_hand = function(obj, playerNum)
+	for i, v in ipairs(obj.player.human[playerNum].hand) do
+		print(v)
+	end
+end
+
+local print_personal_info = function(obj, playerNum)
+	print_hand(obj, 1)
+	print("Money = ", obj.player.human[playerNum].money)
 end
 
 local print_map = function()
@@ -140,21 +148,27 @@ local phase_b = function(obj, playerNum)
 
 		if availableActionList[actInput] == nil then
 			print(string.format("The value is not vaild. please re-enter"))
+		else
+			if availableActionList[actInput].act(obj, playerNum) == true then
+				table.remove(availableActionList, actInput)
+			end
 		end
-		--do_action
-		table.remove(availableActionList, actInput)
 	end
 end
 
-local phase_c = function()
+local phase_c = function(obj, playerNum)
+	draw_max(obj, 1)
 end
 
 local start_player_turn = function(obj)
-	print_personal_info()
+	print_personal_info(obj, 1)
 	print_map()
 	phase_a(obj, 1)
 	phase_b(obj, 1)
-	--phase_c(player)
+	--phase_c(obj, 1)
+	print_personal_info(obj, 1)
+
+	OBJ = obj
 end
 
 local start_computer_turn = function()
@@ -166,11 +180,23 @@ end
 local set_player_order = function()
 end
 
+local get_max_handsize = function(playerInfo)
+	return 4 + playerInfo.upgrade2.hand
+end
+
+local draw_max = function(obj, playerNum)
+	local playerInfo = obj.player.human[playerNum]
+	for i = 1, get_max_handsize(playerInfo) - #playerInfo.hand do
+		obj:draw_1(playerNum)
+	end
+end
+
 local init_setting = function(obj)
 --set additional action
 --random station master tile
 --random neutral building tile 
 	set_neutral_building(obj)
+	draw_max(obj, 1)
 --tile dummy setting
 --pop1 * 7
 --pop2 * ?
