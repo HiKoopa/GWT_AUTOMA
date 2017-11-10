@@ -3,28 +3,6 @@ random_pop = function(tbl)
 	return table.remove(tbl, math.random(1, #tbl))
 end
 
-local gain_cert1 = function(curCert, upgrade2)
-	if (curCert < 3) or (curCert == 3 and upgrade2.cert1 == 1) then
-		return curCert + 1
-	elseif curCert == 4 and upgrade2.cert2 == 1 then
-		return curCert + 2
-	else
-		print("Can't gain a certificate")
-		return false
-	end
-end
-
-local pay_cert1 = function(curCert)
-	if curCert == 6 then
-		return 4, 2
-	end
-	if curCert == 0 then
-		print("Can't gain a certificate")
-		return false
-	end
-	return curCert - 1, 1
-end
-
 local discard_choice = function(hand, num)
 	if num < 0 or num > #hand then
 		print("Invalid input")

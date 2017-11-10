@@ -247,6 +247,35 @@ function _OBJ:draw_discard_3(playerNum)
 	return true
 end
 
+function _OBJ:gain_cert1(playerNum)
+	local curCert = self.player.human[playerNum].cert
+	local upgrade2 = self.player.human[playerNum].upgrade2
+	if (curCert < 3) or (curCert == 3 and upgrade2.cert1 == 1) then
+		self.player.human[playerNum].cert = curCert + 1
+		return true
+	elseif curCert == 4 and upgrade2.cert2 == 1 then
+		self.player.human[playerNum].cert = curCert + 2
+		return true
+	else
+		print("Can't gain a certificate")
+		return false
+	end
+end
+--[[
+function _OBJ:pay_cert1(playerNum)
+	local curCert = self.player.human[playerNum].cert
+	if curCert == 6 then
+		self.player.human[playerNum].cert = curCert - 2
+		return 2
+		return 4, 2
+	end
+	if curCert == 0 then
+		print("Can't gain a certificate")
+		return false
+	end
+	return curCert - 1, 1
+end
+--]]
 return _OBJ
 
 --[[
