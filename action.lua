@@ -13,36 +13,15 @@ local discard_choice = function(hand, num)
 end
 
 local get_pairs = function(hand)
-	local card_count = { }
+	local card_count = {grey = 0, black = 0, green = 0, white = 0, yellow = 0, red = 0, blue = 0, brown = 0, purple = 0}
 	local pair_ret = { }
 	for i, v in ipairs(hand) do
 		card_count[v] = card_count[v] + 1
-	end
-	for i, v in ipairs(card_count) do
-		if v > 1 then
-			insert.table(pair_ret, v)
+		if card_count[v] == 2 then
+			table.insert(pair_ret, v)
 		end
 	end
-end
-
-local discard_pair = function(hand, cardType)
-	local isFindCount = 0
-	local found
-	for i, v in ipairs(hand) do
-		if v.type == cardType then
-			isFindCount = isFindCount + 1
-			if isFindCount == 2 then
-				table.remove(hand, i)
-				table.remove(hand, found)
-			end
-			found = i
-		end
-	end
-	if isFindCount ~= 2 then
-		print("Not found pair")
-		return false
-	end
-	return true
+	return pair_ret
 end
 
 local engine_move1 = function()
@@ -95,49 +74,51 @@ local discard_black_gain_2_cert = function(hand, cert, upgrade2)
 	gain_cert1(cert, upgrade2)
 	return true
 end
-local discard_yellow_gain_10_dollars = function(hand, money)
-	if OBJ:discard_1(hand, "yellow") == false then
+local discard_yellow_gain_10_dollars = function(obj, currentPlayerNum)
+	if obj:discard_1(currentPlayerNum, "yellow") == false then
 		return false
 	end
-	gain_dollars(money, 10)
+	obj:gain_dollars(currentPlayerNum, 10)
 	return true
 end
-local discard_pair_gain_3_dollars = function(hand, money)
-	local cardPairs = get_pairs(hand)
-	while true do
-		for i, v in ipairs(cardPairs) do
-			print(string.format("%d ) %s"), i, v)
-		end
-		print("Please enter what you want to discard : ")
-		local input = io.read("*number")
-		while cardPairs[input] == nil do
-			print(string.format("The value is not valid. please re-enter"))
-			input = io.read("*number")
-		end
-		if discard_pair(hand, cardPairs[io.read("*number")]) == true then
-			break
-		end
+local discard_pair_gain_3_dollars = function(obj, currentPlayerNum)
+	local cardPairs = get_pairs(obj.player.human[currentPlayerNum].hand)
+	if next(cardPairs) == nil then
+		print("There is no pair")
+		return false
 	end
-	gain_dollars(money, 3)
+	for i, v in ipairs(cardPairs) do
+		print(string.format("%d ) %s", i, v))
+	end
+	io.write("Pair) Please enter what you want to discard : ")
+	local input = io.read("*number")
+	while cardPairs[input] == nil do
+		print(string.format("The value is not valid. please re-enter"))
+		input = io.read("*number")
+	end
+	if obj:discard_pair(currentPlayerNum, cardPairs[input]) == true then
+		obj:gain_dollars(currentPlayerNum, 3)
+	end
 	return true
 end
-local discard_pair_gain_4_dollars = function(hand, money)
-	local cardPairs = get_pairs(hand)
-	while true do
-		for i, v in ipairs(cardPairs) do
-			print(string.format("%d ) %s"), i, v)
-		end
-		print("Please enter what you want to discard : ")
-		local input = io.read("*number")
-		while cardPairs[input] == nil do
-			print(string.format("The value is not valid. please re-enter"))
-			input = io.read("*number")
-		end
-		if discard_pair(hand, cardPairs[io.read("*number")]) == true then
-			break
-		end
+local discard_pair_gain_4_dollars = function(obj, currentPlayerNum)
+	local cardPairs = get_pairs(obj.player.human[currentPlayerNum].hand)
+	if next(cardPairs) == nil then
+		print("There is no pair")
+		return false
 	end
-	gain_dollars(money, 4)
+	for i, v in ipairs(cardPairs) do
+		print(string.format("%d ) %s", i, v))
+	end
+	io.write("Pair) Please enter what you want to discard : ")
+	local input = io.read("*number")
+	while cardPairs[input] == nil do
+		print(string.format("The value is not valid. please re-enter"))
+		input = io.read("*number")
+	end
+	if obj:discard_pair(currentPlayerNum, cardPairs[input]) == true then
+		obj:gain_dollars(currentPlayerNum, 4)
+	end
 	return true
 end
 local discard_grey_gain_2_dollars = function(hand, money)

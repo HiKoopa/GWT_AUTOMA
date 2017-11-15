@@ -149,9 +149,10 @@ local phase_b = function(obj, playerNum)
 		if availableActionList[actInput] == nil then
 			print(string.format("The value is not vaild. please re-enter"))
 		else
-			if availableActionList[actInput].act(obj, playerNum) == true then
-				table.remove(availableActionList, actInput)
-			end
+			--if availableActionList[actInput].act(obj, playerNum) == true then
+			availableActionList[actInput].act(obj, playerNum)
+			table.remove(availableActionList, actInput)
+			--end
 		end
 	end
 end

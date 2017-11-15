@@ -172,6 +172,27 @@ function _OBJ:discard_1(playerNum, cardType)
 	return true
 end
 
+function _OBJ:discard_pair(playerNum, cardType)
+	local isFindCount = 0
+	local found
+	local hand = self.player.human[playerNum].hand
+	for i, v in ipairs(hand) do
+		if v == cardType then
+			isFindCount = isFindCount + 1
+			if isFindCount == 2 then
+				table.remove(hand, i)
+				table.remove(hand, found)
+			end
+			found = i
+		end
+	end
+	if isFindCount ~= 2 then
+		print("Not found pair")
+		return false
+	end
+	return true
+end
+
 function _OBJ:draw_discard_1(playerNum)
 	local hand = self.player.human[playerNum].hand
 	local drawDeck = self.player.human[playerNum].drawDeck
