@@ -244,7 +244,180 @@ end
 local gain_engines_per_bush = function()
 	return true
 end
-local cattle_market = function()
+local buy_cattle = function(obj, currentPlayerNum, cattle_tbl, dollars)
+	local currentMoney = obj.player.human[currentPlayerNum].money
+	if currentMoney < dollars then
+		print(string.format("Not enough money.(%d)", currentMoney))
+		return false
+	end
+	if type(cattle_tbl) == "string" then
+		local index
+		local maxPoint = 0
+		for i, v in ipairs(obj.cattleMarket) do
+			if v.name == cattle_tbl and v.point > maxPoint then
+				index = i
+				maxPoint = v.point
+			end
+		end
+		if index == nil then
+			print("There is no cattle.")
+			return false
+		end
+		obj.player.human[currentPlayerNum].money = currentMoney - dollars
+		table.insert(obj.player.human[currentPlayerNum].discardPile, table.remove(obj.cattleMarket, index))
+		print("Buy success")
+		return true
+	else
+		local index1, index2
+		local maxPoint1 = 0
+		local maxPoint2 = 0
+		for i, v in ipairs(obj.cattleMarket) do
+			if v.name == cattle_tbl[1] and v.point > maxPoint1 then
+				if cattle_tbl[1] == cattle_tbl[2] then
+					index2 = index1
+					maxPoint2 = maxPoint1
+				end
+				index1 = i
+				maxPoint1 = v.point
+			elseif v.name == cattle_tbl[2] and v.point > maxPoint2 then
+				index2 = i
+				maxPoint2 = v.point
+			end
+		end
+		if index1 == nil or index2 == nil then
+			print("There is no cattle.")
+			return false
+		end
+		obj.player.human[currentPlayerNum].money = currentMoney - dollars
+		if index1 < index2 then
+			index1, index2 = index2, index1
+		end
+		table.insert(obj.player.human[currentPlayerNum].discardPile, table.remove(obj.cattleMarket, index1))
+		table.insert(obj.player.human[currentPlayerNum].discardPile, table.remove(obj.cattleMarket, index2))
+		print("Buy success")
+		for i, v in ipairs(obj.player.human[currentPlayerNum].discardPile) do
+			print(i, v.name)
+		end
+		return true
+	end
+end
+local cattle_market = function(obj, currentPlayerNum)
+	local availableCowboy = obj.player.human[currentPlayerNum].worker.cw
+
+	while availableCowboy > 0 do
+		for i, v in ipairs(obj.cattleMarket) do
+			print(string.format("%s(%d)", v.name, v.point))
+		end
+		io.write(string.format("Please enter how many cowboys you will use at once(1 ~ %d) : ", availableCowboy))
+		local ret = false
+		local input = io.read("*number")
+		if input > availableCowboy then
+			print("Invalid Input")
+		elseif input == 1 then
+			print("1) draw 2 cattle card")
+			print("2) buy 1 yellow cattle with 6 dollars")
+			print("3) buy 1 red cattle with 6 dollars")
+			print("4) buy 1 blue cattle with 6 dollars")
+			print("5) buy 1 brown cattle with 12 dollars")
+			io.write("Please enter what you want to do : ")
+			input = io.read("*number")
+			if input == 1 then
+				table.insert(obj.cattleMarket, random_pop(obj.cattleDeck))
+				table.insert(obj.cattleMarket, random_pop(obj.cattleDeck))
+				ret = true
+			elseif input == 2 then
+				ret = buy_cattle(obj, currentPlayerNum, "yellow", 6)
+			elseif input == 3 then
+				ret = buy_cattle(obj, currentPlayerNum, "red", 6)
+			elseif input == 4 then
+				ret = buy_cattle(obj, currentPlayerNum, "blue", 6)
+			elseif input == 5 then
+				ret = buy_cattle(obj, currentPlayerNum, "brown", 12)
+			else
+				print("Invalid input")
+			end
+			if ret == true then
+				availableCowboy = availableCowboy - 1
+			end
+		elseif input == 2 then
+			print("1) buy 1 yellow cattle with 3 dollars")
+			print("2) buy 1 red cattle with 3 dollars")
+			print("3) buy 1 blue cattle with 3 dollars")
+			print("4) buy 1 purple cattle with 12 dollars")
+			io.write("Please enter what you want to do : ")
+			input = io.read("*number")
+			if input == 1 then
+				ret = buy_cattle(obj, currentPlayerNum, "yellow", 3)
+			elseif input == 2 then
+				ret = buy_cattle(obj, currentPlayerNum, "red", 3)
+			elseif input == 3 then
+				ret = buy_cattle(obj, currentPlayerNum, "blue", 3)
+			elseif input == 4 then
+				ret = buy_cattle(obj, currentPlayerNum, "purple", 12)
+			else
+				print("Invalid input")
+			end
+			if ret == true then
+				availableCowboy = availableCowboy - 2
+			end
+		elseif input == 3 then
+			print("1) buy 2 3-values cattle with 5 dollars")
+			print("2) buy 1 brown cattle with 6 dollars")
+			io.write("Please enter what you want to do : ")
+			input = io.read("*number")
+			if input == 1 then
+				local cattle_tbl = {}
+				for i = 1, 2 do
+					print("1) yellow")
+					print("2) red")
+					print("3) blue")
+					io.write("Please enter what you want to buy(%d) : ")
+					input = io.read("*number")
+					if input == 1 then
+						table.insert(cattle_tbl, "yellow")
+					elseif input == 2 then
+						table.insert(cattle_tbl, "red")
+					elseif input == 3 then
+						table.insert(cattle_tbl, "blue")
+					else
+						print("Invalid input")
+					end
+				end
+				if #cattle_tbl == 2 then
+					ret = buy_cattle(obj, currentPlayerNum, cattle_tbl, 5)
+				end
+			elseif input == 2 then
+				ret = buy_cattle(obj, currentPlayerNum, "brown", 6)
+			else
+				print("Invalid input")
+			end
+			if ret == true then
+				availableCowboy = availableCowboy - 3
+			end
+		elseif input == 4 then
+			print("1) buy 1 purple cattle with 6 dollars")
+			input = io.read("*number")
+			if input == 1 then
+				ret = buy_cattle(obj, currentPlayerNum, "purple", 6)
+			else
+				print("Invalid input")
+			end
+			if ret == true then
+				availableCowboy = availableCowboy - 4
+			end
+		elseif input == 5 then
+			print("1) buy 2 brown cattle with 8 dollars")
+			local cattle_tbl = {}
+			table.insert(cattle_tbl, "brown")
+			table.insert(cattle_tbl, "brown")
+			ret = buy_cattle(obj, currentPlayerNum, cattle_tbl, 8)
+			if ret == true then
+				availableCowboy = availableCowboy - 5
+			end
+		else
+			print("Invalid input")
+		end
+	end
 	return true
 end
 local remove_hazard7 = function()

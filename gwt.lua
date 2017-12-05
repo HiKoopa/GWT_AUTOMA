@@ -1,3 +1,5 @@
+local CURRENT_PLAYERS = 2
+local CURRENT_CATTLES = 7
 local OBJ = require "object"
 local ACT = require "action"
 
@@ -94,6 +96,11 @@ local phase_a = function(obj, playerNum)
 	while isStop == false do
 		print(string.format("Your current location is %s, Left step : %d", currentManLoc, leftStep))
 		print()
+		if obj.place[currentManLoc].tile then
+			for i, v in ipairs(obj.place[currentManLoc].tile) do
+				print(string.format("%s", v.text))
+			end
+		end
 		isRetry = false
 		if currentManLoc == "KC" then break end
 		if leftStep <= 0 then break end
@@ -192,6 +199,38 @@ local draw_max = function(obj, playerNum)
 	end
 end
 
+local set_cattle_market = function(obj)
+	local yellow = {name = "yellow", point = 1}--7
+	local red = {name = "red", point = 2}--7
+	local blue = {name = "blue", point = 3}--7
+	local brown5 = {name = "brown", point = 5}--9
+	local brown6 = {name = "brown", point = 6}--9
+	local purple7 = {name = "purple", point = 7}--6
+
+	for i = 1, 7 do
+		table.insert(obj.cattleDeck, yellow)
+		table.insert(obj.cattleDeck, red)
+		table.insert(obj.cattleDeck, blue)
+	end
+	for i = 1, 5 do
+		table.insert(obj.cattleDeck, brown5)
+	end
+	for i = 1, 4 do
+		table.insert(obj.cattleDeck, brown6)
+	end
+	for i = 1, 6 do
+		table.insert(obj.cattleDeck, purple7)
+	end
+
+	for i =1, CURRENT_CATTLES do
+		table.insert(obj.cattleMarket, random_pop(obj.cattleDeck))
+	end
+
+	for i, v in ipairs(obj.cattleMarket) do
+		print(v.name)
+	end
+end
+
 local init_setting = function(obj)
 --set additional action
 --random station master tile
@@ -203,6 +242,7 @@ local init_setting = function(obj)
 --pop2 * ?
 --pop1,2,3 set to kc
 --cattle market setting
+	set_cattle_market(obj)
 --random objective card
 --building a? b? give
 --draw 4

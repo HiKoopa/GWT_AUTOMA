@@ -69,7 +69,10 @@ local _OBJ = {
 	}, 
 	railroad = {
 	}, 
+	cattleDeck = {
+	},
 	cattleMarket = {
+		-- {name, point}
 	}, 
 	jobMarket = {
 	}, 
@@ -80,7 +83,7 @@ local _OBJ = {
 			[1] = {
 				currentManLoc = "START",
 				currentEngLoc = 0,
-				money = 0, 
+				money = 10, 
 				availableBuilding = {}, 
 				drawDeck = {"grey", "grey", "grey", "grey", "grey", "white", "white", "white", "black", "black", "black", "green", "green", "green" }, 
 				hand = {}, 
@@ -91,7 +94,7 @@ local _OBJ = {
 				tp = {},
 				upgrade1 = { dollar = 1, d_d = 1, certUp = 0, engine = 0, remove = 0},
 				upgrade2 = { move1 = 0, move2 = 0, hand = 0, cert1 = 0, cert2 = 0},
-				worker = { cw = 1, cf = 1, eg = 1 },
+				worker = { cw = 6, cf = 1, eg = 1 },
 				cert = 0,
 			}
 		},
@@ -159,7 +162,7 @@ function _OBJ:discard_1(playerNum, cardType)
 	local hand = self.player.human[playerNum].hand
 	local isFind = false
 	for i, v in ipairs(hand) do
-		if v == cardType then
+		if v == cardType or v.name == cardType then
 			isFind = true
 			table.remove(hand, i)
 			break
